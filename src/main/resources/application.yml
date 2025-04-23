@@ -1,6 +1,6 @@
 spring:
   application:
-    name: docconneting-alarm
+    name: alarm-service
   jpa:
     properties:
       hibernate:
