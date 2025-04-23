@@ -51,7 +51,6 @@ public class AlarmService {
      */
     @Transactional
     public void sendPostUploadCompletedMessage(Message message) {
-        //TODO : 메인 서버에서 받아온 토큰 리스트로 해주기
         List<String> fcmTokenList = message.getFcmTokenList();
         List<Long> userIdList = message.getUserIdList();
         AlarmType alarmType = message.getAlarmType();
@@ -73,7 +72,6 @@ public class AlarmService {
      */
     @Transactional
     public void sendCommentCompletedMessage(Message message) {
-        //TODO : 메인 서버에서 받아온 토큰과 메세지로
         String fcmToken = message.getFcmToken();
         AlarmType alarmType = message.getAlarmType();
         String alarmMessage = message.getMessage();
@@ -88,7 +86,6 @@ public class AlarmService {
      */
     @Transactional
     public void sendMedicalRequestMessage(Message message) {
-        //TODO : 메인 서버에서 받아온 토큰과 메세지로
         String fcmToken = message.getFcmToken();
         AlarmType alarmType = message.getAlarmType();
         String alarmMessage = message.getMessage();
