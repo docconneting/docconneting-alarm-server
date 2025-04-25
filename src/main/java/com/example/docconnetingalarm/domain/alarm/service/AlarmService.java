@@ -8,6 +8,7 @@ import com.example.docconnetingalarm.domain.alarm.enums.AlarmType;
 import com.example.docconnetingalarm.domain.alarm.repository.AlarmHistoriesBulkRepository;
 import com.example.docconnetingalarm.domain.alarm.repository.AlarmHistoriesRepository;
 import com.example.docconnetingalarm.domain.auth.entity.AuthUser;
+import com.example.docconnetingalarm.infra.rabbitmq.dto.FcmInfo;
 import com.example.docconnetingalarm.infra.rabbitmq.dto.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,8 +52,14 @@ public class AlarmService {
      */
     @Transactional
     public void sendPostUploadCompletedMessage(Message message) {
-        List<String> fcmTokenList = message.getFcmTokenList();
-        List<Long> userIdList = message.getUserIdList();
+        List<String> fcmTokenList = message.getFcmInfos().stream()
+                                    .map(FcmInfo::getFcmToken)
+                                    .toList();
+
+        List<Long> userIdList = message.getFcmInfos().stream()
+                                    .map(FcmInfo::getUserId)
+                                    .toList();
+
         AlarmType alarmType = message.getAlarmType();
         String alarmMessage = message.getMessage();
 
@@ -72,10 +79,10 @@ public class AlarmService {
      */
     @Transactional
     public void sendCommentCompletedMessage(Message message) {
-        String fcmToken = message.getFcmToken();
+        String fcmToken = message.getFcmInfos().get(0).getFcmToken();
+        Long userId = message.getFcmInfos().get(0).getUserId();
         AlarmType alarmType = message.getAlarmType();
         String alarmMessage = message.getMessage();
-        Long userId = message.getUserId();
 
         alarmSenderService.sendAlarm(fcmToken, alarmMessage);
         saveAlarmHistories(alarmMessage, userId, alarmType);
@@ -86,10 +93,10 @@ public class AlarmService {
      */
     @Transactional
     public void sendMedicalRequestMessage(Message message) {
-        String fcmToken = message.getFcmToken();
+        String fcmToken = message.getFcmInfos().get(0).getFcmToken();
+        Long userId = message.getFcmInfos().get(0).getUserId();
         AlarmType alarmType = message.getAlarmType();
         String alarmMessage = message.getMessage();
-        Long userId = message.getUserId();
 
         alarmSenderService.sendAlarm(fcmToken, alarmMessage);
         saveAlarmHistories(alarmMessage, userId, alarmType);
